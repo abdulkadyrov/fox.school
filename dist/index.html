@@ -12,16 +12,17 @@
     <link rel="icon" href="icons/icon-192.png" type="image/png" />
     <link rel="apple-touch-icon" href="icons/icon-192.png" />
     <title>TeacherOS / Foxy Teacher</title>
+    <script type="module" crossorigin src="./assets/index-DUPyoIJU.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-C0jhFoCk.css">
   </head>
   <body>
     <div id="root"></div>
     <script>
-      const viteModeToken = "%MODE%";
+      const viteModeToken = "production";
       const isRawSourceIndex = viteModeToken.startsWith("%") && viteModeToken.endsWith("%");
       if (isRawSourceIndex && location.hostname.endsWith("github.io") && !location.pathname.includes("/dist/")) {
         location.replace(new URL("dist/", location.href));
       }
     </script>
-    <script type="module" src="/src/main.js"></script>
   </body>
 </html>
