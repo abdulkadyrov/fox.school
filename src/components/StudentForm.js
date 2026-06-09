@@ -1,19 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
+import { fileToDataUrl } from "../utils/fileHelpers";
 
 const emptyStudent = {
   fullName: "",
-  age: 8,
+  age: "",
   grade: "",
   groupId: "",
   parentPhone: "",
   notes: [],
-  attendance: 100,
-  behavior: 90,
-  activity: 80,
-  homeworkRate: 80,
+  attendance: "",
+  behavior: "",
+  activity: "",
+  homeworkRate: "",
   weakTopics: [],
   strengths: [],
-  points: 0,
+  points: "",
   level: "Little Fox",
   photoDataUrl: "",
   avatarColor: "#53D6BE",
@@ -48,6 +49,12 @@ export default function StudentForm({ student, groups, onSubmit, onCancel }) {
     setForm((current) => ({ ...current, [field]: value }));
   };
 
+  const uploadPhoto = async (file) => {
+    if (!file) return;
+    const photoDataUrl = await fileToDataUrl(file);
+    updateField("photoDataUrl", photoDataUrl);
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     onSubmit({
@@ -70,6 +77,22 @@ export default function StudentForm({ student, groups, onSubmit, onCancel }) {
   return (
     <form className="entity-form" onSubmit={handleSubmit}>
       <div className="field-grid">
+        <div className="photo-picker">
+          <div className="avatar avatar--form" style={{ "--avatar": form.avatarColor }}>
+            {form.photoDataUrl ? <img src={form.photoDataUrl} alt="" /> : (form.fullName || "FT").slice(0, 2)}
+          </div>
+          <div className="split-actions">
+            <label className="button button--ghost button--compact">
+              Фото
+              <input type="file" accept="image/*" onChange={(event) => uploadPhoto(event.target.files?.[0])} />
+            </label>
+            {form.photoDataUrl && (
+              <button className="button button--ghost button--compact" type="button" onClick={() => updateField("photoDataUrl", "")}>
+                Удалить
+              </button>
+            )}
+          </div>
+        </div>
         <label>
           ФИО
           <input value={form.fullName} required onChange={(event) => updateField("fullName", event.target.value)} />
@@ -87,7 +110,7 @@ export default function StudentForm({ student, groups, onSubmit, onCancel }) {
         </label>
         <label>
           Возраст
-          <input type="number" min="3" max="18" value={form.age} onChange={(event) => updateField("age", event.target.value)} />
+          <input type="number" min="3" max="18" value={form.age} placeholder="Возраст" onChange={(event) => updateField("age", event.target.value)} />
         </label>
         <label>
           Класс
@@ -99,7 +122,7 @@ export default function StudentForm({ student, groups, onSubmit, onCancel }) {
         </label>
         <label>
           Баллы
-          <input type="number" min="0" value={form.points} onChange={(event) => updateField("points", event.target.value)} />
+          <input type="number" min="0" value={form.points} placeholder="0" onChange={(event) => updateField("points", event.target.value)} />
         </label>
       </div>
 
@@ -114,19 +137,19 @@ export default function StudentForm({ student, groups, onSubmit, onCancel }) {
       <div className="metric-grid">
         <label>
           Посещаемость
-          <input type="number" min="0" max="100" value={form.attendance} onChange={(event) => updateField("attendance", event.target.value)} />
+          <input type="number" min="0" max="100" value={form.attendance} placeholder="%" onChange={(event) => updateField("attendance", event.target.value)} />
         </label>
         <label>
           Поведение
-          <input type="number" min="0" max="100" value={form.behavior} onChange={(event) => updateField("behavior", event.target.value)} />
+          <input type="number" min="0" max="100" value={form.behavior} placeholder="%" onChange={(event) => updateField("behavior", event.target.value)} />
         </label>
         <label>
           Активность
-          <input type="number" min="0" max="100" value={form.activity} onChange={(event) => updateField("activity", event.target.value)} />
+          <input type="number" min="0" max="100" value={form.activity} placeholder="%" onChange={(event) => updateField("activity", event.target.value)} />
         </label>
         <label>
           Домашки
-          <input type="number" min="0" max="100" value={form.homeworkRate} onChange={(event) => updateField("homeworkRate", event.target.value)} />
+          <input type="number" min="0" max="100" value={form.homeworkRate} placeholder="%" onChange={(event) => updateField("homeworkRate", event.target.value)} />
         </label>
       </div>
 

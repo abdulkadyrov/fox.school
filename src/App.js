@@ -82,6 +82,23 @@ export default function App() {
     }));
   };
 
+  const saveLesson = (lesson) => {
+    const isExisting = data.lessons.some((item) => item.id === lesson.id);
+    updateData((currentData) => ({
+      ...currentData,
+      lessons: isExisting
+        ? currentData.lessons.map((item) => (item.id === lesson.id ? lesson : item))
+        : [lesson, ...currentData.lessons],
+      groups: currentData.groups.map((group) =>
+        group.id === lesson.groupId && lesson.topic
+          ? { ...group, currentTopic: lesson.topic, progress: Math.min(100, Math.max(Number(group.progress || 0), 5)) }
+          : group
+      ),
+    }));
+    setCurrentLessonId(lesson.id);
+    showToast(isExisting ? "Урок обновлен" : "Урок создан");
+  };
+
   const duplicateLesson = (lessonId) => {
     const lesson = data.lessons.find((item) => item.id === lessonId);
     if (!lesson) return;
@@ -464,6 +481,7 @@ export default function App() {
         return (
           <LessonPlannerPage
             data={data}
+            onSaveLesson={saveLesson}
             onUpdateLesson={updateLesson}
             onDuplicateLesson={duplicateLesson}
             onStartLesson={startLesson}

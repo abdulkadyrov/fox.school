@@ -385,6 +385,12 @@
   font-size: 0.9rem;
 }
 
+.avatar--form {
+  width: 86px;
+  height: 86px;
+  font-size: 1.4rem;
+}
+
 .avatar-stack {
   display: flex;
   margin-top: 12px;
@@ -541,6 +547,16 @@
 .entity-form {
   display: grid;
   gap: 16px;
+}
+
+.photo-picker {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(223, 248, 243, 0.42);
+  padding: 14px;
 }
 
 .muted-text {

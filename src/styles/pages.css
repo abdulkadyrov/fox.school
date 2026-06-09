@@ -354,6 +354,92 @@
   display: none;
 }
 
+.calendar-card {
+  align-content: start;
+}
+
+.calendar-lesson-list,
+.lesson-form-blocks {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.calendar-lesson {
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr);
+  gap: 2px 10px;
+  align-items: center;
+  min-height: 58px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.76);
+  color: var(--text);
+  padding: 10px;
+  text-align: left;
+}
+
+.calendar-lesson.is-active {
+  border-color: var(--primary);
+  background: rgba(223, 248, 243, 0.72);
+}
+
+.calendar-lesson time {
+  grid-row: span 2;
+  color: var(--primary-strong);
+  font-weight: 900;
+}
+
+.calendar-lesson span,
+.calendar-lesson small {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.calendar-lesson small,
+.calendar-empty {
+  color: var(--muted);
+}
+
+.calendar-empty {
+  display: grid;
+  gap: 10px;
+  align-items: center;
+  justify-items: start;
+  border: 1px dashed var(--line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.58);
+  padding: 14px;
+}
+
+.lesson-form-block {
+  display: grid;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.78);
+  padding: 12px;
+}
+
+.lesson-form-block__top {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 76px 40px;
+  gap: 8px;
+  align-items: center;
+}
+
+.lesson-form-block__top strong {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--mint-soft);
+  color: var(--primary-strong);
+}
+
 .run-hero {
   display: flex;
   align-items: center;
