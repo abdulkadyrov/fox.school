@@ -5,6 +5,11 @@ import StudentCard from "../components/StudentCard";
 import StudentForm from "../components/StudentForm";
 import { buildRating } from "../utils/scoreHelpers";
 
+const percentLabel = (value) => {
+  if (value === "" || value === null || value === undefined) return "—";
+  return `${value}%`;
+};
+
 export default function StudentsPage({ data, onAddNote, onAddWeakTopic, onSaveStudent, onUploadPhoto, onRemovePhoto }) {
   const [groupFilter, setGroupFilter] = useState("all");
   const [selectedStudent, setSelectedStudent] = useState(null);
@@ -82,10 +87,10 @@ export default function StudentsPage({ data, onAddNote, onAddWeakTopic, onSaveSt
             </Card>
 
             <div className="metric-grid">
-              <Card className="inner-card"><span>Посещаемость</span><strong>{selectedStudentRecord.attendance}%</strong></Card>
-              <Card className="inner-card"><span>Поведение</span><strong>{selectedStudentRecord.behavior}%</strong></Card>
-              <Card className="inner-card"><span>Активность</span><strong>{selectedStudentRecord.activity}%</strong></Card>
-              <Card className="inner-card"><span>Домашки</span><strong>{selectedStudentRecord.homeworkRate}%</strong></Card>
+              <Card className="inner-card"><span>Посещаемость</span><strong>{percentLabel(selectedStudentRecord.attendance)}</strong></Card>
+              <Card className="inner-card"><span>Поведение</span><strong>{percentLabel(selectedStudentRecord.behavior)}</strong></Card>
+              <Card className="inner-card"><span>Активность</span><strong>{percentLabel(selectedStudentRecord.activity)}</strong></Card>
+              <Card className="inner-card"><span>Домашки</span><strong>{percentLabel(selectedStudentRecord.homeworkRate)}</strong></Card>
             </div>
 
             <Card className="inner-card">

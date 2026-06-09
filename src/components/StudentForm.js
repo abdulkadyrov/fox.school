@@ -26,6 +26,12 @@ const splitList = (value) =>
     .map((item) => item.trim())
     .filter(Boolean);
 
+const normalizePercent = (value) => {
+  if (value === "" || value === null || value === undefined) return null;
+  const numeric = Number(value);
+  return Number.isFinite(numeric) ? Math.max(0, Math.min(100, numeric)) : null;
+};
+
 export default function StudentForm({ student, groups, onSubmit, onCancel }) {
   const [form, setForm] = useState(emptyStudent);
   const [notesText, setNotesText] = useState("");
@@ -64,10 +70,10 @@ export default function StudentForm({ student, groups, onSubmit, onCancel }) {
       parentPhone: form.parentPhone.trim(),
       age: Number(form.age || 0),
       points: Number(form.points || 0),
-      attendance: Math.max(0, Math.min(100, Number(form.attendance || 0))),
-      behavior: Math.max(0, Math.min(100, Number(form.behavior || 0))),
-      activity: Math.max(0, Math.min(100, Number(form.activity || 0))),
-      homeworkRate: Math.max(0, Math.min(100, Number(form.homeworkRate || 0))),
+      attendance: normalizePercent(form.attendance),
+      behavior: normalizePercent(form.behavior),
+      activity: normalizePercent(form.activity),
+      homeworkRate: normalizePercent(form.homeworkRate),
       notes: splitList(notesText),
       weakTopics: splitList(weakTopicsText),
       strengths: splitList(strengthsText),

@@ -167,6 +167,11 @@ export default function App() {
     const oldStudent = data.students.find((student) => student.id === studentId);
     const targetGroup = data.groups.find((group) => group.id === studentInput.groupId);
     const targetGroupAlreadyHasStudent = targetGroup?.studentIds.includes(studentId);
+    const normalizePercent = (value) => {
+      if (value === "" || value === null || value === undefined) return null;
+      const numeric = Number(value);
+      return Number.isFinite(numeric) ? Math.max(0, Math.min(100, numeric)) : null;
+    };
 
     if (
       targetGroup &&
@@ -185,10 +190,10 @@ export default function App() {
       groupId: studentInput.groupId || "",
       parentPhone: studentInput.parentPhone || "",
       notes: studentInput.notes || [],
-      attendance: Number(studentInput.attendance || 0),
-      behavior: Number(studentInput.behavior || 0),
-      activity: Number(studentInput.activity || 0),
-      homeworkRate: Number(studentInput.homeworkRate || 0),
+      attendance: normalizePercent(studentInput.attendance),
+      behavior: normalizePercent(studentInput.behavior),
+      activity: normalizePercent(studentInput.activity),
+      homeworkRate: normalizePercent(studentInput.homeworkRate),
       weakTopics: studentInput.weakTopics || [],
       strengths: studentInput.strengths || [],
       points: Number(studentInput.points || 0),

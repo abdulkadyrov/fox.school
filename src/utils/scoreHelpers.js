@@ -41,7 +41,11 @@ export const getGroupAverageProgress = (group, students) => {
 
   const average =
     groupStudents.reduce(
-      (sum, student) => sum + student.attendance + student.activity + student.homeworkRate,
+      (sum, student) =>
+        sum +
+        Number(student.attendance || 0) +
+        Number(student.activity || 0) +
+        Number(student.homeworkRate || 0),
       0
     ) /
     (groupStudents.length * 3);
