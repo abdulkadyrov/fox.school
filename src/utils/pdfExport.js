@@ -33,7 +33,7 @@ const wrapText = (text, maxChars = 62) => {
   return lines.length ? lines : [""];
 };
 
-const svgText = ({ x, y, lines, size = 22, color = "#333044", weight = 500, lineHeight = 1.32 }) =>
+const svgText = ({ x, y, lines, size = 22, color = "#1F2937", weight = 500, lineHeight = 1.32 }) =>
   lines
     .map(
       (line, index) =>
@@ -47,21 +47,21 @@ const foxMark = (x, y, scale = 1) => `
     <path d="M82 28L67 5L61 35L82 28Z" fill="#F49A5C"/>
     <path d="M16 48C16 22 32 10 50 10C68 10 84 22 84 48C84 74 68 92 50 92C32 92 16 74 16 48Z" fill="#F6A15E"/>
     <path d="M29 57C36 74 43 81 50 81C57 81 64 74 71 57C66 81 58 92 50 92C42 92 34 81 29 57Z" fill="#FFF8F0"/>
-    <circle cx="40" cy="45" r="3.2" fill="#333044"/>
-    <circle cx="60" cy="45" r="3.2" fill="#333044"/>
-    <path d="M46 56H54L50 62L46 56Z" fill="#333044"/>
+    <circle cx="40" cy="45" r="3.2" fill="#1F2937"/>
+    <circle cx="60" cy="45" r="3.2" fill="#1F2937"/>
+    <path d="M46 56H54L50 62L46 56Z" fill="#1F2937"/>
   </g>
 `;
 
-const buildTemplateSvg = ({ title, subtitle, meta = [], sections = [], accent = "#8F7CF6" }) => {
+const buildTemplateSvg = ({ title, subtitle, meta = [], sections = [], accent = "#53D6BE" }) => {
   let y = 208;
   const metaRows = meta
     .map(
       (item, index) => `
         <g transform="translate(${68 + (index % 2) * 330} ${index < 2 ? 126 : 169})">
-          <rect width="286" height="34" rx="8" fill="#FFFFFF" stroke="#E9E2FF"/>
-          <text x="16" y="22" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#767087">${escapeXml(item.label)}</text>
-          <text x="116" y="22" font-family="Arial, sans-serif" font-size="15" font-weight="500" fill="#333044">${escapeXml(item.value)}</text>
+          <rect width="286" height="34" rx="8" fill="#FFFFFF" stroke="#DCEDEA"/>
+          <text x="16" y="22" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#64748B">${escapeXml(item.label)}</text>
+          <text x="116" y="22" font-family="Arial, sans-serif" font-size="15" font-weight="500" fill="#1F2937">${escapeXml(item.value)}</text>
         </g>
       `
     )
@@ -84,7 +84,7 @@ const buildTemplateSvg = ({ title, subtitle, meta = [], sections = [], accent = 
         .flatMap((line) => wrapText(line, 74))
         .map((line, index) => {
           const prefix = section.list ? "• " : "";
-          return `<text x="78" y="${y + index * 26}" font-family="Arial, sans-serif" font-size="18" font-weight="500" fill="#333044">${escapeXml(prefix + line)}</text>`;
+          return `<text x="78" y="${y + index * 26}" font-family="Arial, sans-serif" font-size="18" font-weight="500" fill="#1F2937">${escapeXml(prefix + line)}</text>`;
         })
         .join("");
       y += Math.max(1, bodyLines.length) * 26 + 28;
@@ -95,19 +95,19 @@ const buildTemplateSvg = ({ title, subtitle, meta = [], sections = [], accent = 
 
   return `
     <svg width="${PAGE_WIDTH}" height="${PAGE_HEIGHT}" viewBox="0 0 ${PAGE_WIDTH} ${PAGE_HEIGHT}" xmlns="http://www.w3.org/2000/svg">
-      <rect width="${PAGE_WIDTH}" height="${PAGE_HEIGHT}" fill="#F8F6FF"/>
-      <rect x="42" y="42" width="710" height="1039" rx="8" fill="#FFFFFF" stroke="#E9E2FF"/>
+      <rect width="${PAGE_WIDTH}" height="${PAGE_HEIGHT}" fill="#F9FFFD"/>
+      <rect x="42" y="42" width="710" height="1039" rx="18" fill="#FFFFFF" stroke="#DCEDEA"/>
       <rect x="42" y="42" width="710" height="18" fill="${accent}"/>
       <circle cx="693" cy="97" r="34" fill="#FFF1DF"/>
       ${foxMark(646, 52, 0.9)}
-      <text x="68" y="98" font-family="Arial, sans-serif" font-size="34" font-weight="800" fill="#333044">${escapeXml(title)}</text>
-      <text x="68" y="129" font-family="Arial, sans-serif" font-size="18" font-weight="500" fill="#767087">${escapeXml(subtitle)}</text>
+      <text x="68" y="98" font-family="Arial, sans-serif" font-size="34" font-weight="800" fill="#1F2937">${escapeXml(title)}</text>
+      <text x="68" y="129" font-family="Arial, sans-serif" font-size="18" font-weight="500" fill="#64748B">${escapeXml(subtitle)}</text>
       ${metaRows}
-      <line x1="68" y1="190" x2="726" y2="190" stroke="#E9E2FF" stroke-width="2"/>
+      <line x1="68" y1="190" x2="726" y2="190" stroke="#DCEDEA" stroke-width="2"/>
       ${sectionMarkup}
-      <rect x="68" y="1001" width="658" height="46" rx="8" fill="#F8F6FF" stroke="#E9E2FF"/>
-      <text x="88" y="1030" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#333044">Foxy Teacher</text>
-      <text x="562" y="1030" font-family="Arial, sans-serif" font-size="17" font-weight="500" fill="#767087">Подпись преподавателя</text>
+      <rect x="68" y="1001" width="658" height="46" rx="18" fill="#F9FFFD" stroke="#DCEDEA"/>
+      <text x="88" y="1030" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#1F2937">Foxy Teacher</text>
+      <text x="562" y="1030" font-family="Arial, sans-serif" font-size="17" font-weight="500" fill="#64748B">Подпись преподавателя</text>
     </svg>
   `;
 };
@@ -225,7 +225,7 @@ export const sharePdf = async (templateData, fileName, text) => {
 export const buildHomeworkPdfTemplate = ({ homework, group, student, teacherName, schoolName }) => ({
   title: "Домашнее задание",
   subtitle: schoolName,
-  accent: "#8F7CF6",
+  accent: "#53D6BE",
   meta: [
     { label: "Группа", value: group?.name || "Индивидуально" },
     { label: "Ученик", value: student?.fullName || "Вся группа" },

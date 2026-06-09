@@ -1,6 +1,6 @@
 import Icon from "./Icon";
 
-const mobileItems = ["dashboard", "groups", "planner", "games", "settings"];
+const mobileItems = ["dashboard", "groups", "planner", "materials", "settings"];
 
 export default function BottomNav({ items, activePage, onNavigate }) {
   const visibleItems = items.filter((item) => mobileItems.includes(item.id));
@@ -15,7 +15,7 @@ export default function BottomNav({ items, activePage, onNavigate }) {
           onClick={() => onNavigate(item.id)}
         >
           <Icon name={item.icon} size={22} />
-          <span>{item.label}</span>
+          <span>{item.mobileLabel || item.label}</span>
         </button>
       ))}
     </nav>

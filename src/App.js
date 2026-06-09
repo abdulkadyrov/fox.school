@@ -14,8 +14,9 @@ import RatingPage from "./pages/RatingPage";
 import ReportsPage from "./pages/ReportsPage";
 import SettingsPage from "./pages/SettingsPage";
 import { navItems } from "./data/navigation";
-import { downloadBackup, loadAppData, readBackupFile, resetAppData, saveAppData } from "./data/storage";
+import { clearAppData, downloadBackup, loadAppData, readBackupFile, resetAppData, saveAppData } from "./data/storage";
 import { fileToDataUrl, makeSafeFileName, copyToClipboard, buildWhatsAppUrl } from "./utils/fileHelpers";
+import { buildPrintPacks, downloadPrintHtml, downloadPrintPdf } from "./utils/printExport";
 import {
   buildGroupReportPdfTemplate,
   buildHomeworkPdfTemplate,
@@ -38,6 +39,7 @@ export default function App() {
     () => navItems.find((item) => item.id === activePage)?.label || "Главная",
     [activePage]
   );
+  const printPacks = useMemo(() => buildPrintPacks(data), [data]);
 
   useEffect(() => {
     saveAppData(data);
@@ -330,6 +332,15 @@ export default function App() {
     showToast("Резервная копия импортирована");
   };
 
+  const clearAllData = async () => {
+    const confirmed = window.confirm("Удалить все группы, уроки, учеников, материалы, отчеты и файлы?");
+    if (!confirmed) return;
+    const emptyData = await clearAppData();
+    setData(emptyData);
+    setCurrentLessonId("");
+    showToast("Все данные очищены");
+  };
+
   const installApp = async () => {
     if (!deferredInstallPrompt) return;
     deferredInstallPrompt.prompt();
@@ -382,7 +393,15 @@ export default function App() {
           />
         );
       case "materials":
-        return <MaterialsPage data={data} onAddMaterial={addMaterial} />;
+        return (
+          <MaterialsPage
+            data={data}
+            printPacks={printPacks}
+            onAddMaterial={addMaterial}
+            onDownloadPrintHtml={(pack) => downloadPrintHtml(pack, data.settings)}
+            onDownloadPrintPdf={(pack) => downloadPrintPdf(pack, data.settings)}
+          />
+        );
       case "games":
         return <GamesPage data={data} onSaveGameResult={saveGameResult} />;
       case "rating":
@@ -403,6 +422,7 @@ export default function App() {
             onUpdateSettings={updateSettings}
             onDownloadBackup={() => downloadBackup(data)}
             onImportBackup={importBackup}
+            onClearData={clearAllData}
             onResetData={() => {
               const freshData = resetAppData();
               setData(freshData);

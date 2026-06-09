@@ -15,6 +15,30 @@ export default function LessonRunPage({ data, currentLessonId, onNavigate, onMar
   const activeBlock = lesson?.blocks[activeBlockIndex];
   const nextBlock = lesson?.blocks[activeBlockIndex + 1];
 
+  if (!lesson) {
+    return (
+      <div className="page lesson-run-page">
+        <Card>
+          <div className="section-heading">
+            <div>
+              <span className="eyebrow">Уроки</span>
+              <h1>Пока пусто</h1>
+            </div>
+            <Icon name="timer" size={30} />
+          </div>
+          <div className="split-actions">
+            <button className="button" type="button" onClick={() => onNavigate("planner")}>
+              Планирование
+            </button>
+            <button className="button button--ghost" type="button" onClick={() => onNavigate("materials")}>
+              Материалы
+            </button>
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
   useEffect(() => {
     setActiveBlockIndex(0);
     setIsPaused(true);

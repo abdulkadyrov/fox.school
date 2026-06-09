@@ -6,6 +6,26 @@ const FILE_STORE = "files";
 
 const clone = (value) => JSON.parse(JSON.stringify(value));
 
+export const createEmptyAppData = () => ({
+  ...clone(demoData),
+  groups: [],
+  students: [],
+  lessons: [],
+  programs: [],
+  materials: [],
+  homeworks: [],
+  reports: [],
+  gameResults: [],
+  aliasWords: [],
+  settings: {
+    ...demoData.settings,
+    teacherName: "",
+    schoolName: "Foxy Teacher",
+    logoDataUrl: "",
+    backupDate: "",
+  },
+});
+
 const mergeWithDemo = (stored) => ({
   ...clone(demoData),
   ...stored,
@@ -42,6 +62,22 @@ export const resetAppData = () => {
   const freshData = clone(demoData);
   saveAppData(freshData);
   return freshData;
+};
+
+export const clearAppData = async () => {
+  const emptyData = createEmptyAppData();
+  saveAppData(emptyData);
+
+  if (typeof window !== "undefined" && "indexedDB" in window) {
+    await new Promise((resolve) => {
+      const request = window.indexedDB.deleteDatabase(FILE_DB_NAME);
+      request.onsuccess = resolve;
+      request.onerror = resolve;
+      request.onblocked = resolve;
+    });
+  }
+
+  return emptyData;
 };
 
 export const downloadBackup = (data) => {

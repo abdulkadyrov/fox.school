@@ -82,7 +82,7 @@ export const demoStudents = [
     level: "Fox Starter",
     reportIds: ["report-adam"],
     photoDataUrl: "",
-    avatarColor: "#8F7CF6",
+    avatarColor: "#53D6BE",
   },
   {
     id: "student-malika",
@@ -182,7 +182,7 @@ export const demoStudents = [
     level: "Fox Starter",
     reportIds: [],
     photoDataUrl: "",
-    avatarColor: "#8F7CF6",
+    avatarColor: "#53D6BE",
   },
 ];
 

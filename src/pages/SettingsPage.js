@@ -1,7 +1,7 @@
 import Card from "../components/Card";
 import FileUploader from "../components/FileUploader";
 
-export default function SettingsPage({ data, onUpdateSettings, onDownloadBackup, onImportBackup, onResetData }) {
+export default function SettingsPage({ data, onUpdateSettings, onDownloadBackup, onImportBackup, onResetData, onClearData }) {
   const settings = data.settings;
 
   return (
@@ -96,6 +96,9 @@ export default function SettingsPage({ data, onUpdateSettings, onDownloadBackup,
           </label>
           <button className="button button--soft" type="button" onClick={onResetData}>
             Вернуть демо-данные
+          </button>
+          <button className="button button--danger" type="button" onClick={onClearData}>
+            Очистить всё
           </button>
         </div>
       </Card>

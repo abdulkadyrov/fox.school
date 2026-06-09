@@ -4,7 +4,7 @@ import FileUploader from "../components/FileUploader";
 import Icon from "../components/Icon";
 import { englishFolders, preschoolFolders } from "../data/templates";
 
-export default function MaterialsPage({ data, onAddMaterial }) {
+export default function MaterialsPage({ data, printPacks = [], onAddMaterial, onDownloadPrintHtml, onDownloadPrintPdf }) {
   const [query, setQuery] = useState("");
   const [direction, setDirection] = useState("all");
   const [groupId, setGroupId] = useState("all");
@@ -47,9 +47,42 @@ export default function MaterialsPage({ data, onAddMaterial }) {
       <div className="page-title">
         <div>
           <span className="eyebrow">Материалы</span>
-          <h1>Файлы, ссылки и папки</h1>
+          <h1>Библиотека и печать</h1>
         </div>
       </div>
+
+      <Card className="print-center-card">
+        <div className="section-heading">
+          <div>
+            <span className="eyebrow">Печать</span>
+            <h2>Учебные наборы</h2>
+          </div>
+          <Icon name="pdf" size={30} />
+        </div>
+        <div className="print-pack-grid">
+          {printPacks.slice(0, 8).map((pack) => (
+            <article className="print-pack" key={pack.id}>
+              <span>{pack.label}</span>
+              <strong>{pack.title}</strong>
+              <small>{pack.items.length} карточек</small>
+              <div className="split-actions">
+                <button className="button button--ghost button--compact" type="button" onClick={() => onDownloadPrintHtml?.(pack)}>
+                  HTML
+                </button>
+                <button className="button button--compact" type="button" onClick={() => onDownloadPrintPdf?.(pack)}>
+                  PDF
+                </button>
+              </div>
+            </article>
+          ))}
+          {!printPacks.length && (
+            <article className="print-pack print-pack--empty">
+              <strong>Пока пусто</strong>
+              <small>Наборы появятся из уроков, домашек и игр.</small>
+            </article>
+          )}
+        </div>
+      </Card>
 
       <div className="folder-board">
         <Card>

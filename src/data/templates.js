@@ -61,7 +61,7 @@ export const gameCatalog = [
     id: "quiz",
     title: "Quiz",
     description: "Вопросы по теме с быстрым начислением баллов.",
-    accent: "#8F7CF6",
+    accent: "#53D6BE",
   },
   {
     id: "alias",
@@ -91,7 +91,7 @@ export const gameCatalog = [
     id: "build-word",
     title: "Собери слово",
     description: "Буквы, слоги и порядок.",
-    accent: "#8F7CF6",
+    accent: "#53D6BE",
   },
   {
     id: "flashcards",
