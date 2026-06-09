@@ -14,6 +14,7 @@ const jsAsJsx = () => ({
 });
 
 export default defineConfig({
+  base: "./",
   plugins: [
     jsAsJsx(),
     react({

@@ -1,12 +1,13 @@
-const CACHE_NAME = "foxy-teacher-v1";
+const CACHE_NAME = "foxy-teacher-v2";
+const fromScope = (path) => new URL(path, self.registration.scope).toString();
 const APP_SHELL = [
-  "/",
-  "/index.html",
-  "/manifest.webmanifest",
-  "/offline.html",
-  "/icons/icon-192.png",
-  "/icons/icon-592.png"
-];
+  "./",
+  "index.html",
+  "manifest.webmanifest",
+  "offline.html",
+  "icons/icon-192.png",
+  "icons/icon-592.png"
+].map(fromScope);
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -39,7 +40,7 @@ self.addEventListener("fetch", (event) => {
           caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
           return response;
         })
-        .catch(() => caches.match("/offline.html"));
+        .catch(() => caches.match(fromScope("offline.html")));
     })
   );
 });
