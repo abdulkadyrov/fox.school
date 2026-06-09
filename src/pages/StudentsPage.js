@@ -2,18 +2,23 @@ import { useMemo, useState } from "react";
 import Card from "../components/Card";
 import Modal from "../components/Modal";
 import StudentCard from "../components/StudentCard";
+import StudentForm from "../components/StudentForm";
 import { buildRating } from "../utils/scoreHelpers";
 
-export default function StudentsPage({ data, onAddNote, onAddWeakTopic, onUploadPhoto, onRemovePhoto }) {
+export default function StudentsPage({ data, onAddNote, onAddWeakTopic, onSaveStudent, onUploadPhoto, onRemovePhoto }) {
   const [groupFilter, setGroupFilter] = useState("all");
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [editingStudent, setEditingStudent] = useState(null);
 
   const rating = useMemo(() => buildRating(data.students, data.gameResults), [data.students, data.gameResults]);
   const filteredStudents =
     groupFilter === "all" ? data.students : data.students.filter((student) => student.groupId === groupFilter);
+  const selectedStudentRecord = selectedStudent
+    ? data.students.find((student) => student.id === selectedStudent.id) || selectedStudent
+    : null;
 
-  const selectedGroup = selectedStudent
-    ? data.groups.find((group) => group.id === selectedStudent.groupId)
+  const selectedGroup = selectedStudentRecord
+    ? data.groups.find((group) => group.id === selectedStudentRecord.groupId)
     : null;
 
   return (
@@ -23,12 +28,17 @@ export default function StudentsPage({ data, onAddNote, onAddWeakTopic, onUpload
           <span className="eyebrow">Ученики</span>
           <h1>Карточки, фото и слабые темы</h1>
         </div>
-        <select value={groupFilter} onChange={(event) => setGroupFilter(event.target.value)}>
-          <option value="all">Все группы</option>
-          {data.groups.map((group) => (
-            <option value={group.id} key={group.id}>{group.name}</option>
-          ))}
-        </select>
+        <div className="split-actions split-actions--top">
+          <select value={groupFilter} onChange={(event) => setGroupFilter(event.target.value)}>
+            <option value="all">Все группы</option>
+            {data.groups.map((group) => (
+              <option value={group.id} key={group.id}>{group.name}</option>
+            ))}
+          </select>
+          <button className="button" type="button" onClick={() => setEditingStudent({ groupId: groupFilter === "all" ? "" : groupFilter })}>
+            Добавить
+          </button>
+        </div>
       </div>
 
       <div className="card-grid">
@@ -50,35 +60,42 @@ export default function StudentsPage({ data, onAddNote, onAddWeakTopic, onUpload
         })}
       </div>
 
-      <Modal title={selectedStudent?.fullName} isOpen={Boolean(selectedStudent)} onClose={() => setSelectedStudent(null)}>
-        {selectedStudent && (
+      <Modal title={selectedStudentRecord?.fullName} isOpen={Boolean(selectedStudentRecord)} onClose={() => setSelectedStudent(null)}>
+        {selectedStudentRecord && (
           <div className="drawer-content">
             <div className="detail-strip">
-              <span>{selectedStudent.age} лет</span>
-              <strong>{selectedStudent.grade}</strong>
+              <span>{selectedStudentRecord.age} лет</span>
+              <strong>{selectedStudentRecord.grade}</strong>
               <span>{selectedGroup?.name}</span>
             </div>
 
             <Card className="inner-card">
-              <h3>Контакт родителя</h3>
-              <p>{selectedStudent.parentPhone}</p>
+              <div className="section-heading">
+                <div>
+                  <h3>Контакт родителя</h3>
+                  <p>{selectedStudentRecord.parentPhone || "Не указан"}</p>
+                </div>
+                <button className="button button--ghost button--compact" type="button" onClick={() => setEditingStudent(selectedStudentRecord)}>
+                  Редактировать
+                </button>
+              </div>
             </Card>
 
             <div className="metric-grid">
-              <Card className="inner-card"><span>Посещаемость</span><strong>{selectedStudent.attendance}%</strong></Card>
-              <Card className="inner-card"><span>Поведение</span><strong>{selectedStudent.behavior}%</strong></Card>
-              <Card className="inner-card"><span>Активность</span><strong>{selectedStudent.activity}%</strong></Card>
-              <Card className="inner-card"><span>Домашки</span><strong>{selectedStudent.homeworkRate}%</strong></Card>
+              <Card className="inner-card"><span>Посещаемость</span><strong>{selectedStudentRecord.attendance}%</strong></Card>
+              <Card className="inner-card"><span>Поведение</span><strong>{selectedStudentRecord.behavior}%</strong></Card>
+              <Card className="inner-card"><span>Активность</span><strong>{selectedStudentRecord.activity}%</strong></Card>
+              <Card className="inner-card"><span>Домашки</span><strong>{selectedStudentRecord.homeworkRate}%</strong></Card>
             </div>
 
             <Card className="inner-card">
               <div className="section-heading">
                 <h3>Заметки</h3>
-                <button className="button button--ghost button--compact" type="button" onClick={() => onAddNote(selectedStudent.id)}>
+                <button className="button button--ghost button--compact" type="button" onClick={() => onAddNote(selectedStudentRecord.id)}>
                   Добавить
                 </button>
               </div>
-              {selectedStudent.notes.map((note) => (
+              {(selectedStudentRecord.notes || []).map((note) => (
                 <p className="note-line" key={note}>{note}</p>
               ))}
             </Card>
@@ -86,12 +103,12 @@ export default function StudentsPage({ data, onAddNote, onAddWeakTopic, onUpload
             <Card className="inner-card">
               <div className="section-heading">
                 <h3>Слабые темы</h3>
-                <button className="button button--soft button--compact" type="button" onClick={() => onAddWeakTopic(selectedStudent.id)}>
+                <button className="button button--soft button--compact" type="button" onClick={() => onAddWeakTopic(selectedStudentRecord.id)}>
                   Отметить
                 </button>
               </div>
               <div className="tag-row">
-                {selectedStudent.weakTopics.map((topic) => (
+                {(selectedStudentRecord.weakTopics || []).map((topic) => (
                   <span className="tag tag--warning" key={topic}>{topic}</span>
                 ))}
               </div>
@@ -100,7 +117,7 @@ export default function StudentsPage({ data, onAddNote, onAddWeakTopic, onUpload
             <Card className="inner-card">
               <h3>История отчетов</h3>
               {data.reports
-                .filter((report) => report.studentId === selectedStudent.id)
+                .filter((report) => report.studentId === selectedStudentRecord.id)
                 .map((report) => (
                   <div className="plain-row" key={report.id}>
                     <span>{report.title}</span>
@@ -110,6 +127,22 @@ export default function StudentsPage({ data, onAddNote, onAddWeakTopic, onUpload
             </Card>
           </div>
         )}
+      </Modal>
+
+      <Modal
+        title={editingStudent?.id ? "Редактировать ученика" : "Новый ученик"}
+        isOpen={Boolean(editingStudent)}
+        onClose={() => setEditingStudent(null)}
+      >
+        <StudentForm
+          student={editingStudent?.id ? editingStudent : editingStudent}
+          groups={data.groups}
+          onCancel={() => setEditingStudent(null)}
+          onSubmit={(student) => {
+            onSaveStudent(student);
+            setEditingStudent(null);
+          }}
+        />
       </Modal>
     </div>
   );

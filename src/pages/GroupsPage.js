@@ -1,23 +1,29 @@
 import { useState } from "react";
 import Card from "../components/Card";
 import GroupCard from "../components/GroupCard";
+import GroupForm from "../components/GroupForm";
 import Modal from "../components/Modal";
 import Icon from "../components/Icon";
 
-export default function GroupsPage({ data, onStartLesson, onNavigate }) {
+export default function GroupsPage({ data, onSaveGroup, onStartLesson, onNavigate }) {
   const [selectedGroup, setSelectedGroup] = useState(null);
+  const [editingGroup, setEditingGroup] = useState(null);
 
-  const groupStudents = selectedGroup
-    ? data.students.filter((student) => selectedGroup.studentIds.includes(student.id))
+  const selectedGroupRecord = selectedGroup
+    ? data.groups.find((group) => group.id === selectedGroup.id) || selectedGroup
+    : null;
+
+  const groupStudents = selectedGroupRecord
+    ? data.students.filter((student) => selectedGroupRecord.studentIds.includes(student.id))
     : [];
-  const groupMaterials = selectedGroup
-    ? data.materials.filter((material) => selectedGroup.materialIds.includes(material.id))
+  const groupMaterials = selectedGroupRecord
+    ? data.materials.filter((material) => selectedGroupRecord.materialIds.includes(material.id))
     : [];
-  const groupHomeworks = selectedGroup
-    ? data.homeworks.filter((homework) => homework.groupId === selectedGroup.id)
+  const groupHomeworks = selectedGroupRecord
+    ? data.homeworks.filter((homework) => homework.groupId === selectedGroupRecord.id)
     : [];
-  const groupReports = selectedGroup
-    ? data.reports.filter((report) => report.groupId === selectedGroup.id)
+  const groupReports = selectedGroupRecord
+    ? data.reports.filter((report) => report.groupId === selectedGroupRecord.id)
     : [];
 
   return (
@@ -27,9 +33,14 @@ export default function GroupsPage({ data, onStartLesson, onNavigate }) {
           <span className="eyebrow">Группы</span>
           <h1>Направления и расписание</h1>
         </div>
-        <button className="button" type="button" onClick={() => onNavigate("planner")}>
-          <Icon name="lesson" size={20} /> Программа
-        </button>
+        <div className="split-actions split-actions--top">
+          <button className="button button--ghost" type="button" onClick={() => onNavigate("planner")}>
+            <Icon name="lesson" size={20} /> Программа
+          </button>
+          <button className="button" type="button" onClick={() => setEditingGroup({})}>
+            <Icon name="group" size={20} /> Добавить
+          </button>
+        </div>
       </div>
 
       <div className="card-grid card-grid--groups">
@@ -48,20 +59,27 @@ export default function GroupsPage({ data, onStartLesson, onNavigate }) {
         ))}
       </div>
 
-      <Modal title={selectedGroup?.name} isOpen={Boolean(selectedGroup)} onClose={() => setSelectedGroup(null)}>
-        {selectedGroup && (
+      <Modal title={selectedGroupRecord?.name} isOpen={Boolean(selectedGroupRecord)} onClose={() => setSelectedGroup(null)}>
+        {selectedGroupRecord && (
           <div className="drawer-content">
             <div className="detail-strip">
-              <span>{selectedGroup.direction}</span>
-              <strong>{selectedGroup.age}</strong>
-              <span>{selectedGroup.schedule}</span>
+              <span>{selectedGroupRecord.direction}</span>
+              <strong>{selectedGroupRecord.age}</strong>
+              <span>{selectedGroupRecord.schedule}</span>
             </div>
 
             <Card className="inner-card">
-              <h3>Текущая тема</h3>
-              <p>{selectedGroup.currentTopic}</p>
+              <div className="section-heading">
+                <div>
+                  <h3>Текущая тема</h3>
+                  <p>{selectedGroupRecord.currentTopic}</p>
+                </div>
+                <button className="button button--ghost button--compact" type="button" onClick={() => setEditingGroup(selectedGroupRecord)}>
+                  Редактировать
+                </button>
+              </div>
               <div className="progress-line">
-                <span style={{ width: `${selectedGroup.progress}%` }} />
+                <span style={{ width: `${selectedGroupRecord.progress}%` }} />
               </div>
             </Card>
 
@@ -108,6 +126,22 @@ export default function GroupsPage({ data, onStartLesson, onNavigate }) {
             </div>
           </div>
         )}
+      </Modal>
+
+      <Modal
+        title={editingGroup?.id ? "Редактировать группу" : "Новая группа"}
+        isOpen={Boolean(editingGroup)}
+        onClose={() => setEditingGroup(null)}
+      >
+        <GroupForm
+          group={editingGroup?.id ? editingGroup : null}
+          students={data.students}
+          onCancel={() => setEditingGroup(null)}
+          onSubmit={(group) => {
+            onSaveGroup(group);
+            setEditingGroup(null);
+          }}
+        />
       </Modal>
     </div>
   );

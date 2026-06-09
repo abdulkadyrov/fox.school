@@ -100,6 +100,103 @@ export default function App() {
     showToast("Урок скопирован");
   };
 
+  const saveGroup = (groupInput) => {
+    const isExisting = Boolean(groupInput.id);
+    const groupId = groupInput.id || `group-${Date.now()}`;
+    const normalizedStudentIds = [...new Set(groupInput.studentIds || [])].slice(0, Number(groupInput.maxStudents || 8));
+    const group = {
+      id: groupId,
+      name: groupInput.name || "Новая группа",
+      direction: groupInput.direction || "English School",
+      age: groupInput.age || "",
+      schedule: groupInput.schedule || "",
+      maxStudents: Math.max(1, Math.min(8, Number(groupInput.maxStudents || 8))),
+      studentIds: normalizedStudentIds,
+      currentTopic: groupInput.currentTopic || "",
+      progress: Math.max(0, Math.min(100, Number(groupInput.progress || 0))),
+      materialIds: groupInput.materialIds || [],
+      homeworkIds: groupInput.homeworkIds || [],
+      reportIds: groupInput.reportIds || [],
+      whatsappGroup: groupInput.whatsappGroup || "",
+    };
+
+    updateData((currentData) => ({
+      ...currentData,
+      groups: isExisting
+        ? currentData.groups.map((item) =>
+            item.id === groupId
+              ? group
+              : { ...item, studentIds: item.studentIds.filter((id) => !normalizedStudentIds.includes(id)) }
+          )
+        : [
+            group,
+            ...currentData.groups.map((item) => ({
+              ...item,
+              studentIds: item.studentIds.filter((id) => !normalizedStudentIds.includes(id)),
+            })),
+          ],
+      students: currentData.students.map((student) => {
+        if (normalizedStudentIds.includes(student.id)) return { ...student, groupId };
+        if (student.groupId === groupId) return { ...student, groupId: "" };
+        return student;
+      }),
+    }));
+    showToast(isExisting ? "Группа обновлена" : "Группа добавлена");
+  };
+
+  const saveStudent = (studentInput) => {
+    const isExisting = Boolean(studentInput.id);
+    const studentId = studentInput.id || `student-${Date.now()}`;
+    const oldStudent = data.students.find((student) => student.id === studentId);
+    const targetGroup = data.groups.find((group) => group.id === studentInput.groupId);
+    const targetGroupAlreadyHasStudent = targetGroup?.studentIds.includes(studentId);
+
+    if (
+      targetGroup &&
+      !targetGroupAlreadyHasStudent &&
+      targetGroup.studentIds.length >= Number(targetGroup.maxStudents || 8)
+    ) {
+      showToast("В группе уже 8 учеников");
+      return;
+    }
+
+    const student = {
+      id: studentId,
+      fullName: studentInput.fullName || "Новый ученик",
+      age: Number(studentInput.age || 0),
+      grade: studentInput.grade || "",
+      groupId: studentInput.groupId || "",
+      parentPhone: studentInput.parentPhone || "",
+      notes: studentInput.notes || [],
+      attendance: Number(studentInput.attendance || 0),
+      behavior: Number(studentInput.behavior || 0),
+      activity: Number(studentInput.activity || 0),
+      homeworkRate: Number(studentInput.homeworkRate || 0),
+      weakTopics: studentInput.weakTopics || [],
+      strengths: studentInput.strengths || [],
+      points: Number(studentInput.points || 0),
+      level: studentInput.level || "Little Fox",
+      reportIds: studentInput.reportIds || oldStudent?.reportIds || [],
+      photoDataUrl: studentInput.photoDataUrl || oldStudent?.photoDataUrl || "",
+      avatarColor: studentInput.avatarColor || oldStudent?.avatarColor || "#53D6BE",
+    };
+
+    updateData((currentData) => ({
+      ...currentData,
+      students: isExisting
+        ? currentData.students.map((item) => (item.id === studentId ? student : item))
+        : [student, ...currentData.students],
+      groups: currentData.groups.map((group) => {
+        const withoutStudent = group.studentIds.filter((id) => id !== studentId);
+        if (group.id === student.groupId) {
+          return { ...group, studentIds: [...withoutStudent, studentId].slice(0, Number(group.maxStudents || 8)) };
+        }
+        return { ...group, studentIds: withoutStudent };
+      }),
+    }));
+    showToast(isExisting ? "Ученик обновлен" : "Ученик добавлен");
+  };
+
   const addStudentNote = (studentId) => {
     const note = window.prompt("Новая заметка");
     if (!note) return;
@@ -351,13 +448,14 @@ export default function App() {
   const renderPage = () => {
     switch (activePage) {
       case "groups":
-        return <GroupsPage data={data} onStartLesson={startLesson} onNavigate={navigate} />;
+        return <GroupsPage data={data} onSaveGroup={saveGroup} onStartLesson={startLesson} onNavigate={navigate} />;
       case "students":
         return (
           <StudentsPage
             data={data}
             onAddNote={addStudentNote}
             onAddWeakTopic={addWeakTopic}
+            onSaveStudent={saveStudent}
             onUploadPhoto={uploadStudentPhoto}
             onRemovePhoto={removeStudentPhoto}
           />

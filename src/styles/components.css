@@ -405,6 +405,15 @@
   margin-top: 14px;
 }
 
+.split-actions--top {
+  margin-top: 0;
+  align-items: center;
+}
+
+.split-actions--top select {
+  min-width: min(220px, 100%);
+}
+
 .mini-stats,
 .metric-grid {
   display: grid;
@@ -527,6 +536,16 @@
 .field-grid {
   display: grid;
   gap: 12px;
+}
+
+.entity-form {
+  display: grid;
+  gap: 16px;
+}
+
+.muted-text {
+  color: var(--muted);
+  font-weight: 700;
 }
 
 .segmented {
