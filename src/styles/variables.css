@@ -1,0 +1,25 @@
+:root {
+  color-scheme: light;
+  --bg: #f8f6ff;
+  --surface: rgba(255, 255, 255, 0.88);
+  --surface-strong: #ffffff;
+  --surface-soft: #f2efff;
+  --text: #333044;
+  --muted: #767087;
+  --line: #e9e2ff;
+  --primary: #8f7cf6;
+  --primary-strong: #705bd7;
+  --mint: #6bd6bc;
+  --mint-soft: #e6faf5;
+  --orange: #f49a5c;
+  --orange-soft: #fff1df;
+  --amber: #f8c65a;
+  --coral: #ff8f8f;
+  --danger-soft: #fff0f0;
+  --shadow: 0 16px 45px rgba(112, 88, 180, 0.12);
+  --shadow-soft: 0 8px 24px rgba(112, 88, 180, 0.08);
+  --radius: 8px;
+  --header-height: 70px;
+  --bottom-nav-height: 76px;
+  --side-width: 272px;
+}

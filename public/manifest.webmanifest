@@ -1,0 +1,25 @@
+{
+  "name": "TeacherOS / Foxy Teacher",
+  "short_name": "Foxy Teacher",
+  "description": "PWA-панель преподавателя для планирования уроков, домашек, игр, рейтинга и отчетов.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f8f6ff",
+  "theme_color": "#8f7cf6",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-592.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
